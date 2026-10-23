@@ -1,12 +1,24 @@
+
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+var connectionString = builder.Configuration
+    .GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "A connection string 'DefaultConnection' não foi configurada.");
+}
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -14,26 +26,51 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
+    var summaries = new[]
+    {
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild",
+        "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    };
+
+    return Enumerable.Range(1, 5).Select(index =>
+        new WeatherForecast(
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
             Random.Shared.Next(-20, 55),
             summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+        ));
 })
 .WithName("GetWeatherForecast");
 
+app.MapGet("/health/database", async (
+    AppDbContext dbContext,
+    CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var canConnect = await dbContext.Database
+            .CanConnectAsync(cancellationToken);
+
+        return canConnect
+            ? Results.Ok(new { status = "connected" })
+            : Results.Problem(
+                title: "Database unavailable",
+                statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+    catch (Exception)
+    {
+        return Results.Problem(
+            title: "Database connection failed",
+            statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+})
+.WithName("CheckDatabaseConnection");
+
 app.Run();
+
+public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
+    : DbContext(options);
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {

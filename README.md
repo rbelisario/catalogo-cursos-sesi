@@ -166,11 +166,7 @@ dotnet build backend
 
 ## Estado atual
 
-O ambiente inicial de desenvolvimento foi configurado, com front-end React, API ASP.NET Core e PostgreSQL executado via Docker Compose.
-
-A compilação do front-end e do back-end foi validada. O PostgreSQL iniciou com estado saudável no Docker.
-
-A integração efetiva entre a API e o banco, a modelagem dos cursos, os endpoints de negócio e a interface do catálogo ainda precisam ser implementados e validados nas próximas etapas.
+O ambiente inicial de desenvolvimento foi configurado, com front-end React, API ASP.NET Core e PostgreSQL via Docker Compose. A compilação do front-end e do back-end foi validada, e a conexão entre a API e o PostgreSQL foi testada com sucesso por meio do EF Core e do Npgsql. O modelo de cursos, os endpoints de negócio e a interface do catálogo ainda serão implementados nas próximas etapas.
 
 ## Uso de inteligência artificial
 
