@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using CatalogoCursos.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,9 +69,6 @@ app.MapGet("/health/database", async (
 .WithName("CheckDatabaseConnection");
 
 app.Run();
-
-public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
-    : DbContext(options);
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
