@@ -39,7 +39,8 @@ namespace CatalogoCursos.Api.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)");
 
                     b.Property<int>("Ordem")
                         .HasColumnType("integer");
@@ -67,7 +68,8 @@ namespace CatalogoCursos.Api.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
 
                     b.HasKey("Id");
 
@@ -97,18 +99,21 @@ namespace CatalogoCursos.Api.Migrations
 
                     b.Property<string>("ImagemUrl")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
 
                     b.Property<int>("ModalidadeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("NomeBreve")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("NomeCompleto")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("PublicoAlvo")
                         .IsRequired()
@@ -144,7 +149,8 @@ namespace CatalogoCursos.Api.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
 
                     b.HasKey("Id");
 
@@ -167,7 +173,8 @@ namespace CatalogoCursos.Api.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)");
 
                     b.Property<int>("Ordem")
                         .HasColumnType("integer");
@@ -195,7 +202,8 @@ namespace CatalogoCursos.Api.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
 
                     b.HasKey("Id");
 
