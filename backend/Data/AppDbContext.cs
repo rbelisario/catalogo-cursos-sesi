@@ -47,5 +47,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         modelBuilder.Entity<Aula>()
             .Property(a => a.Nome)
             .HasMaxLength(160);
+
+        modelBuilder
+            .HasDbFunction(typeof(AppDbContext).GetMethod(
+                nameof(Unaccent),
+                new[] { typeof(string) })!)
+            .HasName("unaccent")
+            .HasSchema("public");
     }
+
+    public static string Unaccent(string texto)
+        => throw new NotSupportedException(
+            "Esta função só pode ser usada em consultas do Entity Framework Core.");
 }
