@@ -13,7 +13,7 @@ Os dados disponibilizados são fictícios e utilizados para demonstrar as funcio
 ## 2. Aplicação publicada
 
 - **Front-end:** https://catalogo-cursos-sesi.vercel.app/
-- **API:** https://catalogo-cursos-sesi.vercel.app
+- **API:** https://catalogo-cursos-sesi.onrender.com/api/
 - **Repositório:** https://github.com/rbelisario/catalogo-cursos-sesi
 
 A aplicação utiliza Vercel para hospedar o front-end, Render para executar a API e Neon para hospedar o PostgreSQL.
