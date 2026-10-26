@@ -1,10 +1,12 @@
 # Catálogo de Cursos SESI-SP
 
-Catálogo web de cursos educacionais desenvolvido como parte do case técnico para a vaga de Desenvolvedor de Sistemas I do SESI-SP.
+Aplicação web desenvolvida como parte do case técnico para a vaga de **Desenvolvedor de Sistemas I do SESI-SP**.
+
+O projeto permite consultar cursos educacionais, pesquisar por nome, aplicar filtros e visualizar informações detalhadas, utilizando o protótipo do Figma como referência visual.
 
 ## Objetivo
 
-Desenvolver uma aplicação web para consultar cursos educacionais, com busca, filtros e visualização de detalhes, seguindo os requisitos do case e utilizando o protótipo do Figma como referência visual.
+Desenvolver uma aplicação web para consulta de cursos educacionais, integrando uma interface responsiva a uma API e a um banco de dados relacional, conforme os requisitos do case técnico.
 
 ## Tecnologias
 
@@ -12,16 +14,18 @@ Desenvolver uma aplicação web para consultar cursos educacionais, com busca, f
 - React
 - TypeScript
 - Vite
+- React Router
+- Material UI (MUI)
 
 ### Back-end
 - C#
 - ASP.NET Core Web API
 - Entity Framework Core
-- Npgsql para integração com PostgreSQL
+- Npgsql
 
-### Banco de dados
+### Banco de dados e ambiente
 - PostgreSQL
-- Docker Compose para execução local
+- Docker Compose
 
 ## Estrutura do projeto
 
@@ -32,9 +36,9 @@ catalogo-cursos-sesi/
 │   ├── ANALISE_FIGMA.md     # Análise do protótipo
 │   └── REQUISITOS.md        # Requisitos e critérios de aceite
 ├── frontend/                # Aplicação React
-├── .env.example             # Exemplo de variáveis locais
+├── .env.example             # Exemplo de variáveis de ambiente
 ├── .gitignore
-├── docker-compose.yml       # Banco de dados local
+├── docker-compose.yml       # Configuração do banco local
 └── README.md
 ```
 
@@ -56,19 +60,19 @@ docker --version
 docker compose version
 ```
 
-## Configuração do ambiente local
+## Configuração e execução local
 
-### 1. Configurar as variáveis do PostgreSQL
+Os comandos abaixo devem ser executados a partir da raiz do repositório, salvo quando indicado.
 
-Na raiz do projeto, crie um arquivo `.env` com a variável:
+### 1. Configurar as variáveis de ambiente
+
+Copie o arquivo `.env.example` para `.env` e configure a senha local do PostgreSQL:
 
 ```dotenv
 POSTGRES_PASSWORD=defina_uma_senha_local
 ```
 
-Utilize uma senha local forte. O arquivo `.env` não deve ser versionado.
-
-O arquivo `.env.example` contém apenas um exemplo da variável necessária. Copie-o para `.env` e substitua o valor de exemplo pela sua senha local.
+Utilize uma senha local e mantenha o arquivo `.env` fora do controle de versão. A senha configurada deve ser a mesma utilizada na connection string do back-end.
 
 ### 2. Iniciar o banco de dados
 
@@ -78,57 +82,61 @@ Na raiz do projeto, execute:
 docker compose up -d
 ```
 
-Verifique o estado do serviço:
+Verifique o estado dos serviços:
 
 ```bash
 docker compose ps
 ```
 
-O PostgreSQL deve aparecer como `healthy`.
+Aguarde até que o PostgreSQL esteja saudável (`healthy`), quando esse estado estiver configurado no Docker Compose.
 
-Para parar o serviço:
+Para parar os serviços:
 
 ```bash
 docker compose down
 ```
 
-Os dados são mantidos em um volume Docker. Não utilize `docker compose down -v` se quiser preservar os dados locais.
+Os dados são mantidos em um volume Docker. Evite executar `docker compose down -v` caso queira preservar os dados locais.
 
 ### 3. Configurar os segredos do back-end
 
-Inicialize o armazenamento de segredos de desenvolvimento:
+Inicialize os User Secrets para o projeto, caso ainda não estejam configurados:
 
 ```bash
 dotnet user-secrets init --project backend
 ```
 
-Cadastre a connection string local:
+Cadastre a connection string de desenvolvimento:
 
 ```bash
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=catalogo_cursos;Username=catalogo_app;Password=SUA_SENHA_LOCAL" --project backend
 ```
 
-Substitua `SUA_SENHA_LOCAL` pela mesma senha definida no `.env`.
+Substitua `SUA_SENHA_LOCAL` pela senha definida no arquivo `.env`.
 
-Os User Secrets são destinados ao desenvolvimento local e não devem ser usados como mecanismo de gestão de segredos em produção.
+Os User Secrets são destinados ao desenvolvimento local e não substituem uma solução de gerenciamento de segredos em produção.
 
 ### 4. Executar o back-end
 
-Na raiz do repositório:
+Na raiz do repositório, execute:
 
 ```bash
-dotnet run --project backend
+dotnet run --project backend --launch-profile https
 ```
 
-A API será iniciada no endereço informado pelo terminal. No ambiente local validado durante o desenvolvimento, o endereço HTTP foi `http://localhost:5034`.
-
-O endpoint inicial de exemplo é:
+Utilize o endereço HTTPS informado no terminal para acessar a API. No ambiente de desenvolvimento validado, o endereço foi:
 
 ```text
-/weatherforecast
+https://localhost:7241
 ```
 
-Ele é utilizado apenas para validar a execução inicial da API; não representa um endpoint de cursos.
+O endpoint principal do catálogo é:
+
+```text
+/api/cursos
+```
+
+A API também disponibiliza informações auxiliares para os filtros e os detalhes dos cursos.
 
 ### 5. Executar o front-end
 
@@ -140,34 +148,63 @@ npm install
 npm run dev
 ```
 
-Abra o endereço informado pelo Vite. No ambiente local validado durante o desenvolvimento, foi `http://localhost:5173`.
+Abra o endereço informado pelo Vite. No ambiente de desenvolvimento validado, foi:
 
-### 6. Validar o front-end
+```text
+http://localhost:5173
+```
 
-Dentro da pasta `frontend`, execute:
+Com o banco e a API em execução, a aplicação pode consumir os dados dos cursos disponibilizados pelo back-end.
+
+## Funcionalidades
+
+- Listagem de cursos.
+- Busca por nome.
+- Filtros por categoria, modalidade e status.
+- Navegação entre o catálogo e os detalhes de cada curso.
+- Visualização das informações e dos módulos e aulas disponibilizados pela API.
+- Integração entre front-end, API e banco de dados PostgreSQL.
+
+## Validação e build
+
+### Front-end
+
+Na pasta `frontend`, execute:
 
 ```bash
 npm run lint
 npm run build
 ```
 
-Os comandos verificam problemas de lint e geram a compilação de produção do front-end.
+O primeiro comando verifica problemas identificados pelo ESLint. O segundo executa a compilação de produção.
 
-Para validar a compilação do back-end, execute na raiz:
+### Back-end
+
+Na raiz do repositório, execute:
 
 ```bash
 dotnet build backend
 ```
+
+Esse comando verifica a compilação do projeto .NET.
 
 ## Documentação complementar
 
 - [Requisitos e critérios de aceite](docs/REQUISITOS.md)
 - [Análise do protótipo Figma](docs/ANALISE_FIGMA.md)
 
-## Estado atual
-
-O ambiente inicial de desenvolvimento foi configurado, com front-end React, API ASP.NET Core e PostgreSQL via Docker Compose. A compilação do front-end e do back-end foi validada, e a conexão entre a API e o PostgreSQL foi testada com sucesso por meio do EF Core e do Npgsql. O modelo de cursos, os endpoints de negócio e a interface do catálogo ainda serão implementados nas próximas etapas.
-
 ## Uso de inteligência artificial
 
-O uso de ferramentas de inteligência artificial durante o desenvolvimento será registrado em `USO_DE_IA.md`, incluindo objetivos, prompts relevantes, decisões aproveitadas ou descartadas e validações realizadas.
+Ferramentas de inteligência artificial foram utilizadas como apoio durante o desenvolvimento, incluindo assistência na implementação, investigação de problemas e revisão de soluções.
+
+As decisões e contribuições relevantes devem ser documentadas em `USO_DE_IA.md`, incluindo os objetivos de utilização, exemplos de prompts, soluções aproveitadas ou descartadas e as validações realizadas pelo desenvolvedor.
+
+## Estado do projeto
+
+O projeto contempla o front-end em React e TypeScript, o back-end em ASP.NET Core Web API e a persistência em PostgreSQL.
+
+A aplicação possui catálogo de cursos, busca, filtros e páginas de detalhes, com integração entre a interface, a API e o banco de dados. A compilação do front-end foi validada durante o desenvolvimento.
+
+A execução local depende da configuração das variáveis de ambiente, do banco de dados e dos segredos de desenvolvimento descritos neste documento.
+
+O deploy e a disponibilidade pública da aplicação devem ser verificados separadamente, conforme os requisitos da entrega.
