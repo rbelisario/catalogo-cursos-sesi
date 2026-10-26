@@ -6,7 +6,9 @@ import type {
   OpcaoFiltro,
 } from '../types/curso'
 
-const API_BASE_URL = 'https://localhost:7241/api'
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL || 'https://localhost:7241/api'
+).replace(/\/$/, '')
 
 async function getJson<T>(url: string): Promise<T> {
   const response = await fetch(url)
