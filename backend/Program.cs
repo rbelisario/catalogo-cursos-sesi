@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendDevelopment", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins("http://localhost:5173", "https://catalogo-cursos-sesi.vercel.app")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
